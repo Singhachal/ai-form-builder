@@ -2,22 +2,60 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Form;
+use App\Models\FormField;
+use App\Models\FormSubmission;
+use App\Models\FormSubmissionValue;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Form::factory(5)
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+            ->create()
+
+            ->each(function ($form) {
+
+                $fields = FormField::factory(8)
+
+                    ->make();
+
+                foreach ($fields as $field) {
+
+                    $field->form_id = $form->id;
+
+                    $field->save();
+
+                }
+
+                FormSubmission::factory(20)
+
+                    ->create([
+
+                        'form_id' => $form->id
+
+                    ])
+
+                    ->each(function ($submission) use ($form) {
+
+                        foreach ($form->fields as $field) {
+
+                            FormSubmissionValue::factory()
+
+                                ->create([
+
+                                    'form_submission_id' => $submission->id,
+
+                                    'form_field_id' => $field->id,
+
+                                ]);
+
+                        }
+
+                    });
+
+            });
     }
 }
