@@ -21,7 +21,10 @@ class FormField extends Model
         'required',
         'options',
         'validation',
-        'sort_order'
+        'sort_order',
+        'parent_field_id',
+        'condition_operator',
+        'condition_value',
 
     ];
 
@@ -62,4 +65,20 @@ class FormField extends Model
     {
         return $this->validation ?? [];
     }
+
+    public function parentField()
+{
+    return $this->belongsTo(
+        FormField::class,
+        'parent_field_id'
+    );
+}
+
+public function childFields()
+{
+    return $this->hasMany(
+        FormField::class,
+        'parent_field_id'
+    );
+}
 }
